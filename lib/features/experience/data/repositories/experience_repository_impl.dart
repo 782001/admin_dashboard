@@ -22,6 +22,7 @@ class ExperienceRepositoryImpl implements ExperienceRepository {
             role: e['role'],
             startDate: e['start_date'],
             endDate: e['end_date'],
+            description: e['description'],
           ),
         )
         .toList();
@@ -34,6 +35,7 @@ class ExperienceRepositoryImpl implements ExperienceRepository {
       'role': exp.role,
       'start_date': exp.startDate,
       'end_date': exp.endDate,
+      'description': exp.description,
     });
   }
 
@@ -46,6 +48,7 @@ class ExperienceRepositoryImpl implements ExperienceRepository {
           'role': exp.role,
           'start_date': exp.startDate,
           'end_date': exp.endDate,
+          'description': exp.description,
         })
         .eq('id', exp.id);
   }
