@@ -32,6 +32,11 @@ import 'features/education/domain/repositories/education_repository.dart';
 import 'features/education/domain/usecases/education_usecases.dart';
 import 'features/education/presentation/cubit/education_cubit.dart';
 
+import 'features/contacts/data/repositories/contact_repository_impl.dart';
+import 'features/contacts/domain/repositories/contact_repository.dart';
+import 'features/contacts/domain/usecases/contact_usecases.dart';
+import 'features/contacts/presentation/cubit/contacts_cubit.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -139,6 +144,24 @@ Future<void> init() async {
       addEducationUseCase: sl(),
       updateEducationUseCase: sl(),
       deleteEducationUseCase: sl(),
+    ),
+  );
+
+  // Features - Contacts
+  sl.registerLazySingleton<ContactRepository>(
+    () => ContactRepositoryImpl(supabaseClient: sl()),
+  );
+  sl.registerLazySingleton(() => GetContactsUseCase(sl()));
+  sl.registerLazySingleton(() => AddContactUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateContactUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteContactUseCase(sl()));
+
+  sl.registerFactory(
+    () => ContactsCubit(
+      getContactsUseCase: sl(),
+      addContactUseCase: sl(),
+      updateContactUseCase: sl(),
+      deleteContactUseCase: sl(),
     ),
   );
 }

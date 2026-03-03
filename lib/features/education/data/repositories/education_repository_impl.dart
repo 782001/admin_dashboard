@@ -16,12 +16,12 @@ class EducationRepositoryImpl implements EducationRepository {
     return response
         .map<EducationEntity>(
           (e) => EducationEntity(
-            id: e['id'],
-            degree: e['degree'],
-            institution: e['institution'],
-            startDate: e['start_date'],
-            endDate: e['end_date'],
-            orderIndex: e['order_index'],
+            id: e['id']?.toString() ?? '',
+            degree: e['degree']?.toString() ?? '',
+            institution: e['institution']?.toString() ?? '',
+            startDate: e['start_year']?.toString() ?? '',
+            endDate: e['end_year']?.toString(),
+            orderIndex: e['order_index'] ?? 0,
           ),
         )
         .toList();
@@ -32,8 +32,8 @@ class EducationRepositoryImpl implements EducationRepository {
     await supabaseClient.from('education').insert({
       'degree': edu.degree,
       'institution': edu.institution,
-      'start_date': edu.startDate,
-      'end_date': edu.endDate,
+      'start_year': edu.startDate,
+      'end_year': edu.endDate,
       'order_index': edu.orderIndex,
     });
   }
@@ -45,8 +45,8 @@ class EducationRepositoryImpl implements EducationRepository {
         .update({
           'degree': edu.degree,
           'institution': edu.institution,
-          'start_date': edu.startDate,
-          'end_date': edu.endDate,
+          'start_year': edu.startDate,
+          'end_year': edu.endDate,
           'order_index': edu.orderIndex,
         })
         .eq('id', edu.id);

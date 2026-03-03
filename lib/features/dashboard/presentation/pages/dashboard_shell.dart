@@ -16,7 +16,9 @@ class DashboardShell extends StatelessWidget {
       if (path.startsWith('/projects')) return 1;
       if (path.startsWith('/experience')) return 2;
       if (path.startsWith('/skills')) return 3;
-      if (path.startsWith('/settings')) return 4;
+      if (path.startsWith('/education')) return 4;
+      if (path.startsWith('/contacts')) return 5;
+      if (path.startsWith('/settings')) return 6;
       return 0; // Overview/Home
     }
 
@@ -41,6 +43,12 @@ class DashboardShell extends StatelessWidget {
                   context.go('/skills');
                   break;
                 case 4:
+                  context.go('/education');
+                  break;
+                case 5:
+                  context.go('/contacts');
+                  break;
+                case 6:
                   context.go('/settings');
                   break;
               }
@@ -84,6 +92,14 @@ class DashboardShell extends StatelessWidget {
               NavigationRailDestination(
                 icon: Icon(Icons.star),
                 label: Text('Skills'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.school),
+                label: Text('Education'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.contact_mail),
+                label: Text('Contacts'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.settings),

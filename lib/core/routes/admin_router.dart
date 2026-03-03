@@ -9,6 +9,9 @@ import '../../features/experience/presentation/pages/experience_page.dart';
 import '../../features/skills/presentation/pages/skills_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 
+import '../../features/education/presentation/pages/education_page.dart';
+import '../../features/contacts/presentation/pages/contacts_page.dart';
+
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -60,6 +63,14 @@ class AdminRouter {
           GoRoute(
             path: '/skills',
             builder: (context, state) => const SkillsPage(),
+          ),
+          GoRoute(
+            path: '/education',
+            builder: (context, state) => const EducationPage(),
+          ),
+          GoRoute(
+            path: '/contacts',
+            builder: (context, state) => const ContactsPage(),
           ),
           GoRoute(
             path: '/settings',
