@@ -83,7 +83,7 @@ class EducationView extends StatelessWidget {
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is EducationError) {
-            log(state.message.toString());
+            debugPrint(state.message.toString());
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
