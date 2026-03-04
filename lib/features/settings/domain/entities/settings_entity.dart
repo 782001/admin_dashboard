@@ -7,6 +7,7 @@ class SettingsEntity extends Equatable {
   final String summary;
   final String location;
   final String? profileImageUrl;
+  final String? cvUrl;
 
   const SettingsEntity({
     required this.id,
@@ -15,6 +16,7 @@ class SettingsEntity extends Equatable {
     required this.summary,
     required this.location,
     this.profileImageUrl,
+    this.cvUrl,
   });
 
   @override
@@ -25,5 +27,6 @@ class SettingsEntity extends Equatable {
     summary,
     location,
     profileImageUrl,
+    cvUrl,
   ];
 }

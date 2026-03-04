@@ -26,6 +26,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       summary: response['summary'],
       location: response['location'],
       profileImageUrl: response['profile_image_url'],
+      cvUrl: response['cv_url'],
     );
   }
 
@@ -39,6 +40,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
           'summary': settings.summary,
           'location': settings.location,
           'profile_image_url': settings.profileImageUrl,
+          'cv_url': settings.cvUrl,
         })
         .eq('id', settings.id);
   }

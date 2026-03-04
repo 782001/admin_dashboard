@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../injection_container.dart' as di;
 import '../../domain/entities/settings_entity.dart';
 import '../cubit/settings_cubit.dart';
@@ -57,6 +60,66 @@ class _SettingsViewState extends State<SettingsView> {
       _titleController.text = settings.title;
       _locationController.text = settings.location;
       _summaryController.text = settings.summary;
+      _uploadedCvUrl = settings.cvUrl;
+    }
+  }
+
+  String? _uploadedCvUrl;
+  bool _isUploadingCv = false;
+
+  Future<void> _uploadCv() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+      withData: true,
+    );
+
+    if (result != null && result.files.single.bytes != null) {
+      setState(() {
+        _isUploadingCv = true;
+      });
+
+      try {
+        final bytes = result.files.single.bytes!;
+        final ext = result.files.single.extension ?? 'pdf';
+        final fileName = 'cv_${const Uuid().v4()}.$ext';
+
+        await Supabase.instance.client.storage
+            .from('projects')
+            .uploadBinary(fileName, bytes);
+
+        final publicUrl = Supabase.instance.client.storage
+            .from('projects')
+            .getPublicUrl(fileName);
+
+        setState(() {
+          _uploadedCvUrl = publicUrl;
+          _isUploadingCv = false;
+        });
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'CV uploaded successfully! Don\'t forget to save changes.',
+            ),
+          ),
+        );
+      } catch (e) {
+        setState(() {
+          _isUploadingCv = false;
+        });
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Upload failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -69,6 +132,7 @@ class _SettingsViewState extends State<SettingsView> {
         location: _locationController.text,
         summary: _summaryController.text,
         profileImageUrl: _currentSettings!.profileImageUrl,
+        cvUrl: _uploadedCvUrl,
       );
       context.read<SettingsCubit>().updateSettings(updatedSettings);
     }
@@ -170,6 +234,43 @@ class _SettingsViewState extends State<SettingsView> {
                       border: OutlineInputBorder(),
                     ),
                     validator: (v) => v!.isEmpty ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: _isUploadingCv ? null : _uploadCv,
+                        icon: _isUploadingCv
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.upload_file),
+                        label: Text(
+                          _isUploadingCv ? 'Uploading...' : 'Upload CV (PDF)',
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      if (_uploadedCvUrl != null) ...[
+                        const Icon(Icons.check_circle, color: Colors.green),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'CV Uploaded: ${_uploadedCvUrl!.split('/').last}',
+                            style: const TextStyle(color: Colors.green),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ] else ...[
+                        const Text(
+                          'No CV uploaded',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 32),
                   SizedBox(
